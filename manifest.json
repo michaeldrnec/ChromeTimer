@@ -1,0 +1,7 @@
+{
+"name":"Multi Purpose Timer",
+"description": "A multiple purpose timer application",
+"version":"0.1",
+"icons":{"128":"icon_128.png"},
+"app":{"launch":{"local_path":"index.htm"}}
+}
