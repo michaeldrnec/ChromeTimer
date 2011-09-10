@@ -1,12 +1,18 @@
-<html>
-<head><title>Multi Purpose Timer</title></head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Multi Purpose Timer</title>
+<link rel="stylesheet" href="main.css" type="text/css" />
+</head>
+
 <body>
 <script type="text/javascript" src="jquery-1.6.2.js"></script>
 <script type="text/javascript" src="main.js"></script>
-<script type="text/javascript">
-var audio = new Audio('alarm_1.mp3');
-audio.play();
-</script>
-<div id="clock">00:00:00</div>
+<section id="content" class="content">
+	<div id="clock" class="clock">00:00:00</div>
+	<button id="start" class="button orange">Start</button>
+	<button id="stop" class="button orange">Stop</button>
+</section>
 </body>
 </html>
