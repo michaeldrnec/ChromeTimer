@@ -62,6 +62,37 @@ function ResetStopwatch() {
 	$("#stopwatch").text("00:00:00.0");
 }
 
+function StartGame() {
+	if (timer == null) {
+		gameFirstActive = true;
+		gameStartTime = new Date().getTime();
+		window.setInterval(UpdateGame, 100);
+	}
+}
+
+function UpdateGame() {
+	var curTime = new Date().getTime() - gameStartTime;
+	if (gameFirstActive) {
+		$("#gameClock1").text(ConvertTimeMili(gameElapsed1 + curTime));
+		$("#gameClock2").text(ConvertTimeMili(gameElapsed2));
+	} else {
+		$("#gameClock1").text(ConvertTimeMili(gameElapsed1));
+		$("#gameClock2").text(ConvertTimeMili(gameElapsed2 + curTime));
+	}
+}
+
+function SwitchGame() {
+	var curTime = new Date().getTime();
+	var elapsedTime = curTime - gameStartTime;
+	if (gameFirstActive) {
+		gameElapsed1 += elapsedTime;
+	} else {
+		gameElapsed2 += elapsedTime;
+	}
+	gameStartTime = curTime;
+	gameFirstActive = !gameFirstActive
+	UpdateGame();
+}
 
 $(document).ready(function() {
 	$(clock).text(ConvertTime(countdown));
@@ -70,6 +101,8 @@ $(document).ready(function() {
 	$("#startStopwatch").bind('click', StartStopwatch);
 	$("#stopStopwatch").bind('click', StopStopwatch);
 	$("#resetStopwatch").bind('click', ResetStopwatch);
+	$("#gameStart").bind('click', StartGame);
+	$("#gameSwitch").bind('click', SwitchGame);
 });
 
 var countdown = 70;
@@ -77,3 +110,7 @@ var timer;
 var stopwatchStartTime;
 var stopwatchElapsed;
 var elapsedTime = 0;
+var gameStartTime;
+var gameFirstActive = true;
+var gameElapsed1 = 0;
+var gameElapsed2 = 0;
