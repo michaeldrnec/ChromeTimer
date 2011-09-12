@@ -22,11 +22,58 @@ function ConvertTime(t)
 	+ ':' + (s < 10 ? '0' + s : s);
 }
 
+function ConvertTimeMili(t) 
+{
+	var h = Math.floor(t / 3600000);
+	t %= 3600000;
+	var m = Math.floor(t / 60000);
+	var s = Math.floor(t / 1000);
+	var mili = Math.floor((t % 1000) / 100);
+	return (h < 10 ? '0' + h : h)
+	+ ':' + (m < 10 ? '0' + m : m) 
+	+ ':' + (s < 10 ? '0' + s : s) + ('.' + mili);
+}
+
+function StartStopwatch() {
+	if (timer == null) {
+		stopwatchStartTime = new Date().getTime();
+		timer = window.setInterval(UpdateStopwatch, 100);
+	}
+}
+function StopStopwatch() {
+	if (timer != null) {
+		elapsedTime += Math.floor(new Date().getTime() - stopwatchStartTime);
+		window.clearInterval(timer);
+		timer = null;
+		$('#stopwatch').text(ConvertTimeMili(elapsedTime));
+	}
+}
+
+function UpdateStopwatch() {
+	$('#stopwatch').text(ConvertTimeMili(elapsedTime + Math.floor(new Date().getTime() - stopwatchStartTime)));
+}
+
+function ResetStopwatch() {
+	elapsedTime = 0;
+	if (timer != null) {
+		window.clearInterval(timer);
+		timer = null;
+	}
+	$("#stopwatch").text("00:00:00.0");
+}
+
+
 $(document).ready(function() {
 	$(clock).text(ConvertTime(countdown));
 	$("#start").bind('click', function() { if (timer == null) {timer = window.setInterval(UpdateClock, 1000); } });
 	$("#stop").bind('click', function() { window.clearInterval(timer); timer = null; });
+	$("#startStopwatch").bind('click', StartStopwatch);
+	$("#stopStopwatch").bind('click', StopStopwatch);
+	$("#resetStopwatch").bind('click', ResetStopwatch);
 });
 
 var countdown = 70;
 var timer;
+var stopwatchStartTime;
+var stopwatchElapsed;
+var elapsedTime = 0;
