@@ -24,11 +24,12 @@ function ConvertTime(t)
 
 function ConvertTimeMili(t) 
 {
-	var h = Math.floor(t / 3600000);
-	t %= 3600000;
-	var m = Math.floor(t / 60000);
-	var s = Math.floor(t / 1000);
 	var mili = Math.floor((t % 1000) / 100);
+	t = Math.floor(t / 1000)
+	var h = Math.floor(t / 3600);
+	t %= 3600;
+	var m = Math.floor(t / 60);
+	var s = t % 60;
 	return (h < 10 ? '0' + h : h)
 	+ ':' + (m < 10 ? '0' + m : m) 
 	+ ':' + (s < 10 ? '0' + s : s) + ('.' + mili);
@@ -94,8 +95,31 @@ function SwitchGame() {
 	UpdateGame();
 }
 
+function PokerStart() {
+	if (timer == null) {
+		pokerRoundTime = 5000;
+		$('#poker').text(ConvertTimeMili(pokerRoundTime));
+		pokerStartTime = new Date().getTime();
+		window.setInterval(PokerUpdate, 100);
+	}	
+}
+
+function PokerUpdate() {
+	var curTime = new Date().getTime() - pokerStartTime;
+	var newTime = pokerRoundTime * pokerRound - curTime;
+	if (newTime > 0) {
+		$('#poker').text(ConvertTimeMili(newTime));
+	} else {
+		pokerRound += 1;
+		pokerBigBlind *= 2;
+		$('#round').text(pokerRound);
+		$('#blinds').text(pokerBigBlind / 2 + '/' + pokerBigBlind);
+		$('#poker').text(ConvertTimeMili(pokerRoundTime * pokerRound - curTime));
+	}
+}
+
 $(document).ready(function() {
-	$(clock).text(ConvertTime(countdown));
+//	$(clock).text(ConvertTime(countdown));
 	$("#start").bind('click', function() { if (timer == null) {timer = window.setInterval(UpdateClock, 1000); } });
 	$("#stop").bind('click', function() { window.clearInterval(timer); timer = null; });
 	$("#startStopwatch").bind('click', StartStopwatch);
@@ -103,6 +127,7 @@ $(document).ready(function() {
 	$("#resetStopwatch").bind('click', ResetStopwatch);
 	$("#gameStart").bind('click', StartGame);
 	$("#gameSwitch").bind('click', SwitchGame);
+	$("#pokerStart").bind('click', PokerStart);
 });
 
 var countdown = 70;
@@ -114,3 +139,7 @@ var gameStartTime;
 var gameFirstActive = true;
 var gameElapsed1 = 0;
 var gameElapsed2 = 0;
+var pokerRoundTime = 0;
+var pokerStartTime = 0;
+var pokerRound = 1;
+var pokerBigBlind = 10;
